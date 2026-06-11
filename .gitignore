@@ -1,0 +1,31 @@
+# macOS
+.DS_Store
+
+# Xcode
+DerivedData/
+.derivedData/
+build/
+*.xcuserstate
+xcuserdata/
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# CocoaPods
+Pods/
+
+# Archives and generated artifacts
+*.xcarchive
+*.xcframework
+*.framework.dSYM
+*.dSYM
+*.zip
+
+# User/local files
+*.swp
+*.tmp
