@@ -69,11 +69,16 @@ class NetworkDelegate{
         let readTimeout = socket.readTimeoutForCurrentAttempt()
         DispatchQueue.main.asyncAfter(deadline: .now() + readTimeout / 1000) {
             if(self.receivedData == nil && self.isNetworkError == false){
-                if socket.retryAfterRequestTimeoutIfNeeded() {
-                    return
-                }
+//                if socket.retryAfterRequestTimeoutIfNeeded() {
+//                    return
+//                }
                 self.receivedData = false
-                let error = IPificationException(IPificationError.cannot_connect, "Failed to connect to \(self.endpoint.url?.absoluteString ?? "") - Timeout \(readTimeout/1000)");
+                var errorMessage = "Failed to connect to \(self.endpoint.url?.absoluteString ?? "") - Timeout \(readTimeout/1000)"
+                if let diagnostics = socket.transportDiagnosticSummary(reason: "read_timeout") {
+                    self.onLogs("network force timeout diagnostics \(diagnostics)")
+                    errorMessage += "; \(diagnostics)"
+                }
+                let error = IPificationException(IPificationError.cannot_connect, errorMessage);
                 self.cellularCallback.onError(error: error)
                 socket.connection.cancel()
             }
@@ -393,7 +398,7 @@ class NetworkDelegate{
     }
     func onLogs(_ log: String) {
         if(IPConfiguration.sharedInstance.debug){
-            cellularCallback.onLogs(log)
+            cellularCallback.onLogs("Network Delegate - " + log)
         }
     }
 

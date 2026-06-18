@@ -258,6 +258,9 @@ internal class NetworkSocket: RawSocketProtocol {
             params.requiredInterfaceType = .cellular
         }
         onLogs("network force config host=\(host) port=\(port) connectTimeout=\(tcpOptions.connectionTimeout)s requiredInterface=\(!isIMFlow ? "cellular" : "default")")
+        if IPConfiguration.sharedInstance.debug {
+            onLogs("network force interface snapshot \(interfaceSnapshotDescription())")
+        }
         
         self.connection =  NWConnection.init(host:  h  , port: p!, using: params)
         
@@ -268,6 +271,7 @@ internal class NetworkSocket: RawSocketProtocol {
             switch newState {
             case .ready:
                 self.onLogs("network force state ready host=\(host)")
+                self.onLogs("network force path ready \(self.pathSnapshotDescription())")
                 self.isConnectReady = true
                 self.isWaitingForLocalNetworkPermission = false
                 self.isPossibleLocalNetworkPermissionRequired = false
@@ -276,6 +280,7 @@ internal class NetworkSocket: RawSocketProtocol {
                 break
             case .waiting(let error):
                 self.onLogs("network force state waiting host=\(host) error=\(error.debugDescription)")
+                self.onLogs("network force path waiting \(self.pathSnapshotDescription())")
                 if let unsatisfiedReason = self.currentPathUnsatisfiedReasonDescription() {
                     self.onLogs("network force path unsatisfiedReason host=\(host) reason=\(unsatisfiedReason)")
                 }
@@ -309,6 +314,7 @@ internal class NetworkSocket: RawSocketProtocol {
                 self.isWaitingForLocalNetworkPermission = false
                 self.isPossibleLocalNetworkPermissionRequired = false
                 self.onLogs("network force state failed host=\(host) error=\(error.debugDescription)")
+                self.onLogs("network force path failed \(self.pathSnapshotDescription())")
                 if self.retryAfterConnectionResetIfNeeded(error, host: host, port: port, enableTLS: enableTLS, tlsSettings: tlsSettings) == false {
                     self.delegate?.didDisconnect(socket: self, error: self.connectionFailureMessage(for: error, host: host, port: port))
                     self.disconnect(becauseOf: error)
@@ -333,6 +339,9 @@ internal class NetworkSocket: RawSocketProtocol {
                         }
                         self.isConnectReady = false
                         self.onLogs("network force timeout host=\(host) after=\(self.currentReadTimeout / 1000)s")
+                        if let diagnostics = self.transportDiagnosticSummary(reason: "connect_timeout") {
+                            self.onLogs("network force timeout diagnostics \(diagnostics)")
+                        }
                         self.delegate?.didDisconnect(socket: self, error: self.connectionTimeoutMessage(host: host, port: port))
                         self.stop()
                     }
@@ -506,8 +515,22 @@ internal class NetworkSocket: RawSocketProtocol {
         return currentReadTimeout > 0 ? currentReadTimeout : cellularRequest!.readTimeout
     }
 
+    func transportDiagnosticSummary(reason: String) -> String? {
+        guard IPConfiguration.sharedInstance.debug else {
+            return nil
+        }
+        let requiredInterface = isIMFlow ? "default" : "cellular"
+        let url = endpoint?.url?.absoluteString ?? "\(host):\(port)"
+        let dnsResult = resolvedIPs(for: host).joined(separator: ",")
+        return "diagnostics: reason=\(reason); url=\(url); host=\(host); port=\(port); requiredInterface=\(requiredInterface); path=\(pathSnapshotDescription()); interfaces=\(interfaceSnapshotDescription()); resolvedIPs=\(dnsResult)"
+    }
+
     private func connectionTimeoutMessage(host: String, port: UInt16) -> String {
-        return "Failed to connect to \(host):\(port) - Timeout after \(cellularRequest!.connectTimeout / 1000)s"
+        var message = "Failed to connect to \(host):\(port) - Timeout after \(cellularRequest!.connectTimeout / 1000)s"
+        if let diagnostics = transportDiagnosticSummary(reason: "connect_timeout") {
+            message += "; \(diagnostics)"
+        }
+        return message
     }
     
     /**
@@ -577,7 +600,7 @@ internal class NetworkSocket: RawSocketProtocol {
     func readDataWithTag(_ tag: Int) {
         self.onLogs("readDataWithTag")
         connection.receive(minimumIncompleteLength: 1, maximumLength: 4096) {(data, contentContext, isComplete, error) in
-            self.onLogs("received...")
+            self.onLogs("received... \(error?.localizedDescription ?? "")")
             var datalength = 0
             if let error = error {
                 self.onLogs("error - \(error.localizedDescription)\n")
@@ -587,6 +610,7 @@ internal class NetworkSocket: RawSocketProtocol {
 
                 return
             } else {
+                self.onLogs("data checking ... \n")
                 if let d = data {
                     datalength = d.count
                     self.mData.append(d)
@@ -665,6 +689,55 @@ internal class NetworkSocket: RawSocketProtocol {
 
         let ips = resolvedIPs(for: host)
         onLogs("network force resolved host=\(host) ips=\(ips.joined(separator: ","))")
+    }
+
+    private func pathSnapshotDescription() -> String {
+        guard connection != nil else {
+            return "unavailable"
+        }
+
+        guard let path = connection.currentPath else {
+            return "unavailable"
+        }
+        let status = "\(path.status)"
+        let interfaces = path.availableInterfaces.map { interfaceDescription($0) }.joined(separator: ",")
+        let interfaceNames = interfaces.isEmpty ? "none" : interfaces
+        var parts = [
+            "status=\(status)",
+            "isExpensive=\(path.isExpensive)",
+            "supportsDNS=\(path.supportsDNS)",
+            "supportsIPv4=\(path.supportsIPv4)",
+            "supportsIPv6=\(path.supportsIPv6)",
+            "availableInterfaces=\(interfaceNames)"
+        ]
+
+        if #available(iOS 14.2, macOS 11.0, *) {
+            parts.append("unsatisfiedReason=\(path.unsatisfiedReason)")
+        }
+
+        return parts.joined(separator: ",")
+    }
+
+    private func interfaceSnapshotDescription() -> String {
+        let (isCellularOn, isWifiOn, cellularIPv4, wifiIPv4, cellularIPv6, wifiIPv6) = ConnectionManager.checkNetworkInterfaces()
+        return "cellularOn=\(isCellularOn),wifiOn=\(isWifiOn),cellularIPv4=\(cellularIPv4 ?? "nil"),cellularIPv6=\(cellularIPv6 ?? "nil"),wifiIPv4=\(wifiIPv4 ?? "nil"),wifiIPv6=\(wifiIPv6 ?? "nil")"
+    }
+
+    private func interfaceDescription(_ interface: NWInterface) -> String {
+        switch interface.type {
+        case .cellular:
+            return "cellular"
+        case .wifi:
+            return "wifi"
+        case .wiredEthernet:
+            return "wiredEthernet"
+        case .loopback:
+            return "loopback"
+        case .other:
+            return "other"
+        @unknown default:
+            return "unknown"
+        }
     }
 
     private func resolvedIPs(for host: String) -> [String] {
