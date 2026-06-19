@@ -43,7 +43,7 @@ To add the IPification package to your Xcode project, follow these steps:
 
 - In the search box, enter the repository URL: https://github.com/ipification/IPificationSwiftDistribution.git.
 
-- Choose Version: Exact and set it to `2.1.12`.
+- Choose Version: Exact and set it to `2.2.0`.
 
 *** Note: For Xcode versions earlier than 16, please use version `2.1.3`.
 
@@ -52,7 +52,7 @@ To add the IPification package to your Xcode project, follow these steps:
 You can use CocoaPods to install `IPificationSDK` by adding it to your Podfile:
 
 ```Podfile 
-   pod 'IPificationSDK', '2.1.12'
+   pod 'IPificationSDK', '2.2.0'
 ```
 
 *** Note: For Xcode versions earlier than 16, please use version `2.1.3`.
