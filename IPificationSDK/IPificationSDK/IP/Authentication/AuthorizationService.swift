@@ -229,6 +229,12 @@ public class AuthorizationService {
      *   - isOnlyIM: Flag to indicate if only IM (Instant Messaging) flow should be used. Default is false.
      */
     private func doAuthorization(_ authRequest : AuthorizationRequest? = nil, _ isOnlyIM: Bool = false) {
+        // Capture the login_hint before validation so that every error report for this
+        // request (including early validation failures and post-redirect failures, where the
+        // rebuilt request no longer carries query params) includes the phone number.
+        authLoginHint = authRequest?.queryParams?["login_hint"]
+        currentState = ""
+
         // validate
         if(IPConfiguration.sharedInstance.AUTHORIZATION_URL == ""){
             let error = IPificationException(IPificationError.validation, "AUTHORIZATION_URL is nil" )
@@ -250,7 +256,6 @@ public class AuthorizationService {
         }
         
         isRedirect = false
-        authLoginHint = authRequest?.queryParams?["login_hint"]
         let configuration = IPConfiguration.sharedInstance
         let builder = AuthorizationRequest.Builder()
         var isRequestParamPresent = false
@@ -447,7 +452,9 @@ public class AuthorizationService {
             logData += "error_description=\(errorDesc);"
         }
 
-        let phone = self.authorizationRequest?.queryParams?["login_hint"] ?? authLoginHint
+        // Prefer the hint captured at the start of the request: after a redirect the current
+        // request is rebuilt from the Location URL and has no login_hint of its own.
+        let phone = authLoginHint ?? self.authorizationRequest?.queryParams?["login_hint"]
         APIManager.sharedInstance.sendErrorReport(phone: phone, api: IPConfiguration.sharedInstance.AUTH_API_STR, logData: logData, state: self.currentState)
     }
     /**
