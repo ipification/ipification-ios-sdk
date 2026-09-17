@@ -27,7 +27,13 @@ import UIKit
         return url
     }
     
-    func sendErrorReport(phone: String?, api: String, logData: String)
+    /// Sends a diagnostic error report to the IPification SDK log endpoint.
+    /// - Parameters:
+    ///   - phone: The phone number (login hint) associated with the request, when available.
+    ///   - api: The API being reported (`COVERAGE` or `AUTH`).
+    ///   - logData: The error description payload.
+    ///   - state: The OAuth state of the authorization request, when available. Sent as its own `state` field.
+    func sendErrorReport(phone: String?, api: String, logData: String, state: String? = nil)
     {
         if(IPConfiguration.sharedInstance.sendErrorReportsEnabled == false){
             onLogs("disabled send log. ignored")
@@ -39,15 +45,22 @@ import UIKit
         let errorType = parseType(logData: logData)
 
         var requestBodyComponents = URLComponents()
-        requestBodyComponents.queryItems = [
+        var queryItems = [
             URLQueryItem(name: "log_data", value: logData),
             URLQueryItem(name: "type", value: errorType),
             URLQueryItem(name: "api", value: api),
             URLQueryItem(name: "phone", value: phone)
         ]
+        if let state = state, state.isEmpty == false {
+            queryItems.append(URLQueryItem(name: "state", value: state))
+        }
+        requestBodyComponents.queryItems = queryItems
         onLogs("debug logData: \(logData)\n")
         if let phone = phone, phone != "" {
             onLogs("debug phone: \(phone)\n")
+        }
+        if let state = state, state != "" {
+            onLogs("debug state: \(state)\n")
         }
         
         guard let reportUrl = URL(string: url) else {

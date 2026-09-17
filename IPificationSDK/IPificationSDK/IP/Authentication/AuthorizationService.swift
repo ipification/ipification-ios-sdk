@@ -448,7 +448,7 @@ public class AuthorizationService {
         }
 
         let phone = self.authorizationRequest?.queryParams?["login_hint"] ?? authLoginHint
-        APIManager.sharedInstance.sendErrorReport(phone: phone, api: IPConfiguration.sharedInstance.AUTH_API_STR, logData: logData)
+        APIManager.sharedInstance.sendErrorReport(phone: phone, api: IPConfiguration.sharedInstance.AUTH_API_STR, logData: logData, state: self.currentState)
     }
     /**
      * Executes the authorization request using IP flow.
