@@ -40,7 +40,8 @@ public class SMSServices {
             return
         }
         guard beginRequest() else {
-            DispatchQueue.main.async { callback.onError(error: error(SMSErrorCode.requestInProgress, "An SMS verification request is already in progress.")) }
+            // Another SMS request is still in flight: ignore this call rather than surfacing an error.
+            logIgnored(label: "SMS_AUTH")
             return
         }
 
@@ -55,13 +56,16 @@ public class SMSServices {
 
         logRequestStart(label: "SMS_AUTH", url: url, body: body)
         performJSONRequest(label: "SMS_AUTH", url: url, body: body) { result in
+            // The in-progress lock only guards the network request itself. Release it here so an
+            // app that starts SMS verification and then abandons it can start another request
+            // without having to call `reset()`.
+            finishRequest()
             switch result {
             case .success(let (data, rawResponse)):
                 do {
                     guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
                           let authReqId = json["auth_req_id"] as? String,
                           let nonce = json["nonce"] as? String else {
-                        finishRequest()
                         logParseError(label: "SMS_AUTH", message: "Failed to parse SMS auth response.", rawResponse: rawResponse)
                         DispatchQueue.main.async { callback.onError(error: error(SMSErrorCode.parseError, "Failed to parse SMS auth response.")) }
                         return
@@ -73,12 +77,10 @@ public class SMSServices {
                     }
                     DispatchQueue.main.async { callback.onAuthInitiated(response: SMSAuthResponse(authReqId: authReqId, nonce: nonce, authServer: authServer, rawResponse: rawResponse)) }
                 } catch {
-                    finishRequest()
                     logParseError(label: "SMS_AUTH", message: "Failed to parse SMS auth response: \(error.localizedDescription)", rawResponse: rawResponse)
                     DispatchQueue.main.async { callback.onError(error: Self.error(SMSErrorCode.parseError, "Failed to parse SMS auth response: \(error.localizedDescription)")) }
                 }
             case .failure(let error):
-                finishRequest()
                 DispatchQueue.main.async { callback.onError(error: error) }
             }
         }
@@ -87,6 +89,11 @@ public class SMSServices {
     public static func verifyOTP(otpCode: String, authReqId: String, nonce: String, callback: SMSCallback) {
         guard isConfigured() else {
             DispatchQueue.main.async { callback.onError(error: error(SMSErrorCode.configurationError, "SMS not properly configured.")) }
+            return
+        }
+        guard beginRequest() else {
+            // Another SMS request is still in flight: ignore this call rather than surfacing an error.
+            logIgnored(label: "SMS_TOKEN")
             return
         }
 
@@ -125,6 +132,8 @@ public class SMSServices {
         }
     }
 
+    /// Clears the in-progress flag. Normally unnecessary: the flag is released automatically when
+    /// each SMS request completes. Kept as an escape hatch for integrators that relied on it.
     public static func reset() {
         finishRequest()
     }
@@ -185,6 +194,11 @@ public class SMSServices {
             }
             completion(.success((data, rawResponse)))
         }.resume()
+    }
+
+    private static func logIgnored(label: String) {
+        guard IPConfiguration.sharedInstance.debug else { return }
+        IPLogs.sharedInstance.append("[SMSServices] \(label) - IGNORED (another SMS request is already in progress)")
     }
 
     private static func logRequestStart(label: String, url: String, body: [String: Any]) {
