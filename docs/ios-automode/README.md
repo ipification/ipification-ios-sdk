@@ -295,6 +295,20 @@ IPificationTheme.sharedInstance.updateScreen(
 ```
 <!-- tabs:end -->
 
+Every value can also be changed individually, so you only need to override the strings or colors you care about (the rest keep their defaults):
+
+<!-- tabs:start -->
+```swift
+IPificationLocale.sharedInstance.cancelBtnText = "Back"
+IPificationLocale.sharedInstance.errorMsgSessionNotFound = "This session has expired. Please try again."
+IPificationLocale.sharedInstance.imErrorTitleText = "Oops"
+IPificationLocale.sharedInstance.autoDesc = "Opening %@ ..."   // %@ is replaced with the app name in auto mode
+
+IPificationTheme.sharedInstance.backgroundColor = UIColor(white: 0.97, alpha: 1)
+IPificationTheme.sharedInstance.cancelBtnColor = UIColor.systemRed
+```
+<!-- tabs:end -->
+
 ![Theme&Locale](images/im-theme-and-locale-iOS.svg)
 
 1. **titleBar** - title bar (text, color)

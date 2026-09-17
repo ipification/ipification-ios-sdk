@@ -13,16 +13,16 @@ import UIKit
 /// Configures colors used by the SDK-provided instant-messaging interface.
 public class IPificationTheme : NSObject {
     /// The navigation-bar title color.
-    var toolbarTitleColor : UIColor = UIColor.black
+    public var toolbarTitleColor : UIColor = UIColor.black
     /// The navigation-bar cancel button color.
-    var cancelBtnColor : UIColor = UIColor.systemBlue
+    public var cancelBtnColor : UIColor = UIColor.systemBlue
 
     /// The main screen title color.
-    var titleColor : UIColor = UIColor.black
+    public var titleColor : UIColor = UIColor.black
     /// The screen description text color.
-    var descColor : UIColor = UIColor.black
+    public var descColor : UIColor = UIColor.black
     /// The screen background color.
-    var backgroundColor : UIColor = UIColor.white
+    public var backgroundColor : UIColor = UIColor.white
 
     
     

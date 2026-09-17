@@ -13,29 +13,29 @@ import Foundation
 public class IPificationLocale : NSObject {
 
     /// The title shown in the navigation bar.
-    var topTitle: String = "IPification"
+    public var topTitle: String = "IPification"
     /// The main title shown on the IM selection screen.
-    var title: String = "Phone Number Verify"
+    public var title: String = "Phone Number Verify"
     /// The instructions shown below the main title.
-    var desc: String = "Please tap on the preferred messaging app then follow our instruction on the screen"
+    public var desc: String = "Please tap on the preferred messaging app then follow our instruction on the screen"
     /// The title of the WhatsApp authentication button.
-    var whatsappBtnText: String = "Quick Login via Whatsapp"
+    public var whatsappBtnText: String = "Quick Login via Whatsapp"
     /// The title of the Viber authentication button.
-    var viberBtnText: String = "Quick Login via Viber"
+    public var viberBtnText: String = "Quick Login via Viber"
     /// The title of the Telegram authentication button.
-    var telegramBtnText: String = "Quick Login via Telegram"
+    public var telegramBtnText: String = "Quick Login via Telegram"
     /// The title of the cancel button.
-    var cancelBtnText: String = "Cancel"
+    public var cancelBtnText: String = "Cancel"
     /// The message shown when the IM session cannot be found.
-    var errorMsgSessionNotFound = "The session has expired or could not be found. Please try again."
+    public var errorMsgSessionNotFound = "The session has expired or could not be found. Please try again."
     /// The message shown when the IM session has already completed.
-    var errorMsgSessionAlreadyCompleted = "The session has already completed. Please back to the app."
+    public var errorMsgSessionAlreadyCompleted = "The session has already completed. Please back to the app."
     /// The confirmation button title used by IM error alerts.
-    var imErrorButtonText = "OK"
+    public var imErrorButtonText = "OK"
     /// The title used by IM error alerts.
-    var imErrorTitleText = "Error"
+    public var imErrorTitleText = "Error"
     /// The automatic-mode status text; `%@` is replaced with the provider name.
-    var autoDesc: String = "Booting up your %@ ..."
+    public var autoDesc: String = "Booting up your %@ ..."
     
     
     override init() {
