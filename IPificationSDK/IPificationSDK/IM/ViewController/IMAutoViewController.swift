@@ -75,8 +75,8 @@ class IMAutoViewController: UIViewController {
         
         startCheckingSession()
         
-        observer = NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { [unowned self] notification in
-            self.delayToCheckSessionComplete()
+        observer = NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { [weak self] _ in
+            self?.delayToCheckSessionComplete()
         }
         showAutoHideLoadingView()
     }
