@@ -25,6 +25,12 @@ struct IPHeaders {
     static let OS_SDK = "os-sdk"
     /// Header key for the SDK implementation type.
     static let SDK_TYPE = "sdk-type"
+    /// Header key for the host app bundle identifier.
+    static let APP_PACKAGE = "app-package"
+    /// Header key for the host app marketing version (CFBundleShortVersionString).
+    static let APP_VERSION = "app-version"
+    /// Header key for the host app build number (CFBundleVersion).
+    static let APP_BUILD = "app-build"
     
     /// Header key indicating whether the device supports dual SIM.
     static let DUAL_SIM_PHONE = "dual-sim-phone"
@@ -80,6 +86,16 @@ struct IPHeaders {
             headers[DEVICE_NAME] = UIDevice.deviceModelName
             headers[OS_VERSION] = UIDevice.current.systemVersion
             headers[IP_SDK_VERSION] = IPConfiguration.sharedInstance.SDK_TYPE_VALUE + "-" + IPConfiguration.sharedInstance.CURRENT_VERSION
+            // host app package info
+            if let appPackage = hostAppPackage() {
+                headers[APP_PACKAGE] = appPackage
+            }
+            if let appVersion = hostAppVersion() {
+                headers[APP_VERSION] = appVersion
+            }
+            if let appBuild = hostAppBuild() {
+                headers[APP_BUILD] = appBuild
+            }
             let (_, isWifiOn, cellularIPv4, wifiIPv4, cellularIPv6, wifiIPv6) = ConnectionManager.checkNetworkInterfaces()
             headers[IS_WIFI_ON] = (isWifiOn == true ? "yes" : "no")
             let privateIP: String
@@ -207,6 +223,28 @@ struct IPHeaders {
         
         return headers
     }
+    /// The bundle identifier of the host app, when available.
+    public static func hostAppPackage() -> String? {
+        return nonEmpty(Bundle.main.bundleIdentifier)
+    }
+
+    /// The marketing version (CFBundleShortVersionString) of the host app, when available.
+    public static func hostAppVersion() -> String? {
+        return nonEmpty(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String)
+    }
+
+    /// The build number (CFBundleVersion) of the host app, when available.
+    public static func hostAppBuild() -> String? {
+        return nonEmpty(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String)
+    }
+
+    private static func nonEmpty(_ value: String?) -> String? {
+        guard let value = value?.trimmingCharacters(in: .whitespacesAndNewlines), value.isEmpty == false else {
+            return nil
+        }
+        return value
+    }
+
     public static func activeMNC() -> String{
         // iOS 16+ → immediately return ""
         if #available(iOS 16, *) {
