@@ -317,6 +317,7 @@ public class IPConfiguration : NSObject {
         log += "SDK VERSION: \(deviceInfo[IPHeaders.IP_SDK_VERSION] ?? "N/A")\n"
         log += "APP PACKAGE: \(deviceInfo[IPHeaders.APP_PACKAGE] ?? "N/A")\n"
         log += "APP VERSION: \(deviceInfo[IPHeaders.APP_VERSION] ?? "N/A") (\(deviceInfo[IPHeaders.APP_BUILD] ?? "N/A"))\n"
+        log += "ERROR REPORT: \(deviceInfo[IPHeaders.ERROR_REPORT] ?? "N/A")\n"
         log += "-------------------------------------\n"
         log += "CLIENT_ID: \(IPConfiguration.sharedInstance.CLIENT_ID)\n"
         log += "INPUT PHONE NUMBER: " + "\(inputPhone)\n"

@@ -31,6 +31,8 @@ struct IPHeaders {
     static let APP_VERSION = "app-version"
     /// Header key for the host app build number (CFBundleVersion).
     static let APP_BUILD = "app-build"
+    /// Header key reporting whether the SDK sends error reports (`on` / `off`).
+    static let ERROR_REPORT = "error-report"
     
     /// Header key indicating whether the device supports dual SIM.
     static let DUAL_SIM_PHONE = "dual-sim-phone"
@@ -96,6 +98,8 @@ struct IPHeaders {
             if let appBuild = hostAppBuild() {
                 headers[APP_BUILD] = appBuild
             }
+            // whether this client will send error reports to the SDK log endpoint
+            headers[ERROR_REPORT] = IPConfiguration.sharedInstance.sendErrorReportsEnabled ? "on" : "off"
             let (_, isWifiOn, cellularIPv4, wifiIPv4, cellularIPv6, wifiIPv6) = ConnectionManager.checkNetworkInterfaces()
             headers[IS_WIFI_ON] = (isWifiOn == true ? "yes" : "no")
             let privateIP: String
