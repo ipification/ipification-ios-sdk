@@ -15,7 +15,8 @@ extension URL {
     if let components = URLComponents(url: self, resolvingAgainstBaseURL: false) {
       if let queryItems = components.queryItems {
         for item in queryItems {
-          dict[item.name] = item.value!
+          // A query item with no "=" (e.g. "?foo") has a nil value; treat it as empty rather than crash.
+          dict[item.name] = item.value ?? ""
         }
       }
       return dict
