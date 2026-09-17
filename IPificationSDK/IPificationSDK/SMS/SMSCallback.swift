@@ -20,7 +20,19 @@ public protocol MultiAuthCallback: AnyObject {
     /// Called when IP-based authentication succeeds.
     func onSuccess(response: AuthorizationResponse)
     /// Called when the flow falls back to SMS and requires an OTP.
+    ///
+    /// Collect the code from the user and pass it to `AuthorizationService.verifySMSOTP(otpCode:authReqId:nonce:)`;
+    /// the result arrives in `onSMSSuccess(response:)` or `onError(error:)` on this same callback.
     func onOTPRequired(response: SMSAuthResponse)
+    /// Called after the SMS OTP is verified successfully.
+    ///
+    /// Optional. The default implementation does nothing, so existing conformers keep compiling.
+    func onSMSSuccess(response: SMSTokenResponse)
     /// Called when authentication cannot continue or fails.
     func onError(error: IPificationException)
+}
+
+public extension MultiAuthCallback {
+    func onSMSSuccess(response: SMSTokenResponse) {
+    }
 }

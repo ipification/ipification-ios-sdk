@@ -53,6 +53,8 @@ public class AuthorizationService {
     /// The state value expected in the authorization response.
     private var currentState = ""
     private weak var multiAuthCallback: MultiAuthCallback?
+    /// Bridges `SMSCallback` events to `multiAuthCallback` during SMS fallback and OTP verification.
+    private var multiAuthSMSCallback: MultiAuthSMSCallback?
 
     private func clearCookiesIfNeeded() {
         if IPConfiguration.sharedInstance.enableCookieHandling {
@@ -153,6 +155,21 @@ public class AuthorizationService {
     public func verifySMSOTP(otpCode: String, authReqId: String, nonce: String, callback: SMSCallback) {
         SMSServices.verifyOTP(otpCode: otpCode, authReqId: authReqId, nonce: nonce, callback: callback)
     }
+
+    /// Verifies an OTP for a flow started with `startAuthentication(_:callback:)` that fell back to SMS.
+    ///
+    /// The result is delivered to the `MultiAuthCallback` supplied to `startAuthentication`:
+    /// `onSMSSuccess(response:)` on success, `onError(error:)` on failure.
+    public func verifySMSOTP(otpCode: String, authReqId: String, nonce: String) {
+        guard let callback = multiAuthCallback else {
+            let error = IPificationException(IPificationError.validation, "verifySMSOTP requires a MultiAuthCallback. Start the flow with startAuthentication(_:callback:) or pass an SMSCallback explicitly.")
+            callbackFailed?(error)
+            return
+        }
+        let bridge = multiAuthSMSCallback ?? MultiAuthSMSCallback(callback: callback)
+        multiAuthSMSCallback = bridge
+        SMSServices.verifyOTP(otpCode: otpCode, authReqId: authReqId, nonce: nonce, callback: bridge)
+    }
     /**
      * Perform IM (Instant Messaging) authentication only.
      *
@@ -197,7 +214,9 @@ public class AuthorizationService {
             return
         }
         let scope = authRequest?.scope ?? IPConfiguration.sharedInstance.SMS_SCOPE_VERIFY_PHONE
-        SMSServices.startVerification(phoneNumber: smsPhoneNumber, scope: scope, callback: MultiAuthSMSCallback(callback: callback))
+        let bridge = MultiAuthSMSCallback(callback: callback)
+        multiAuthSMSCallback = bridge
+        SMSServices.startVerification(phoneNumber: smsPhoneNumber, scope: scope, callback: bridge)
     }
     
     
@@ -684,6 +703,7 @@ private class MultiAuthSMSCallback: SMSCallback {
     }
 
     func onSuccess(response: SMSTokenResponse) {
+        callback?.onSMSSuccess(response: response)
     }
 
     func onError(error: IPificationException) {
