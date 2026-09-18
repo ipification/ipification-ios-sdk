@@ -64,7 +64,7 @@ internal class NetworkSocket: RawSocketProtocol {
     var previousByteLengh = 0
 
     /// Called when the transport receives a valid SDK response.
-    public var callbackSuccess: ((_ response: ResponseProtocol) -> Void)?
+    var callbackSuccess: ((_ response: ResponseProtocol) -> Void)?
     /// Called when the transport fails or receives an invalid response.
     public var callbackFailed: ((_ response: IPificationException) -> Void)?
     /// Called when the authentication flow must continue at another URL.

@@ -40,7 +40,6 @@
 		0A90C49E2EBD000100000001 /* IMAutoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A90C49D2A1E7B2A008801DB /* IMAutoViewController.swift */; };
 		0AAB35AD2EBD000100000001 /* IMViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AAB35AC2769A1F2006A0698 /* IMViewController.swift */; };
 		0AAB35C02EBD000100000001 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AAB35BF2769C1AA006A0698 /* ViewController.swift */; };
-		0AAB35C22EBD000100000001 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AAB35C12769C1AA006A0698 /* Coordinator.swift */; };
 		0AAB35D62EBD000100000001 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AAB35D42769CA76006A0698 /* ViewModel.swift */; };
 		0AAB35D72EBD000100000001 /* ViewModelErrorAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AAB35D52769CA76006A0698 /* ViewModelErrorAction.swift */; };
 		0AAB35DC2EBD000100000001 /* IPificationIMInstance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AAB35DB2769CC27006A0698 /* IPificationIMInstance.swift */; };
@@ -94,7 +93,6 @@
 		0A90C49D2A1E7B2A008801DB /* IMAutoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMAutoViewController.swift; sourceTree = "<group>"; };
 		0AAB35AC2769A1F2006A0698 /* IMViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IMViewController.swift; sourceTree = "<group>"; };
 		0AAB35BF2769C1AA006A0698 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		0AAB35C12769C1AA006A0698 /* Coordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		0AAB35D42769CA76006A0698 /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		0AAB35D52769CA76006A0698 /* ViewModelErrorAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModelErrorAction.swift; sourceTree = "<group>"; };
 		0AAB35DB2769CC27006A0698 /* IPificationIMInstance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPificationIMInstance.swift; sourceTree = "<group>"; };
@@ -221,7 +219,6 @@
 			isa = PBXGroup;
 			children = (
 				0AAB35D32769CA6C006A0698 /* ViewModel */,
-				0AAB35C12769C1AA006A0698 /* Coordinator.swift */,
 				0AAB35BF2769C1AA006A0698 /* ViewController.swift */,
 			);
 			path = Base;
@@ -470,7 +467,6 @@
 				0AAB35DC2EBD000100000001 /* IPificationIMInstance.swift in Sources */,
 				0ABAB9752EBD000100000001 /* IMButton.swift in Sources */,
 				0A3DE4042668ACD30085BDF1 /* NetworkDelegate.swift in Sources */,
-				0AAB35C22EBD000100000001 /* Coordinator.swift in Sources */,
 				0AD30B85247CEAC800093153 /* ConnectionUtil.swift in Sources */,
 				0ABAB9862EBD000100000001 /* ProviderInfo.swift in Sources */,
 				0AD40B7A24863D0000B0D1A6 /* CoverageCallback.swift in Sources */,

@@ -8,7 +8,7 @@
 
 import Foundation
 /// Defines common values exposed by authorization and coverage responses.
-public protocol ResponseProtocol: AnyObject {
+protocol ResponseProtocol: AnyObject {
     func getPlainResponse() -> String
     func getError() -> String
     func getCode() -> String?

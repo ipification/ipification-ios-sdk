@@ -9,7 +9,7 @@
 import Foundation
 
 /// Defines the request data required by the SDK network transport.
-public protocol RequestProtocol: AnyObject {
+protocol RequestProtocol: AnyObject {
     /// The maximum time to wait for response data, in milliseconds.
     var readTimeout: TimeInterval {get set}
     /// The maximum time to wait for a connection, in milliseconds.

@@ -9,7 +9,7 @@
 
 import Foundation
 /// Provides internal network-interface and connectivity checks used by the SDK.
-public class ConnectionManager {
+class ConnectionManager {
     
     /// The process-wide connection manager.
     static let sharedInstance = ConnectionManager()
@@ -101,7 +101,7 @@ public class ConnectionManager {
     }
     
     
-    public static func checkNetworkInterfaces() -> (Bool, Bool, String?, String?, String?, String?) {
+    static func checkNetworkInterfaces() -> (Bool, Bool, String?, String?, String?, String?) {
         // Get list of all interfaces on the local machine:
         var ifaddr: UnsafeMutablePointer<ifaddrs>?
         
@@ -164,7 +164,7 @@ public class ConnectionManager {
     }
 
     // Return preferred IP address strings of WWAN and Wi‑Fi interfaces.
-    public static func checkOnly3G() -> (Bool, Bool, String?, String?) {
+    static func checkOnly3G() -> (Bool, Bool, String?, String?) {
         let (is3GOn, isWifiOn, cellularIPv4, _, cellularIPv6, _) = checkNetworkInterfaces()
         return (is3GOn, isWifiOn, cellularIPv4 ?? "", cellularIPv6 ?? "")
     }
