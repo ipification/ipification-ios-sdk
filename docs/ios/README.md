@@ -106,6 +106,23 @@ IPConfiguration.sharedInstance.REALM_NAME = "your-realm"
 
 <br/>
 
+- **<a id="timeouts"></a>[Timeouts](#timeouts)** (optional) - Every Check Coverage and Authentication request has a *connect timeout* (time allowed to establish the cellular connection to the IPification server) and a *read timeout* (time allowed for the response once the request is sent). All four values are in **milliseconds** and default to `10000` (10 seconds). Change them before you create the `CoverageService` / `AuthorizationService` or build a request:
+
+```swift
+func setupIPification() {
+    IPConfiguration.sharedInstance.CoverageConnectTimeout = 5000   // ms, default 10000
+    IPConfiguration.sharedInstance.CoverageReadTimeout = 5000      // ms, default 10000
+    IPConfiguration.sharedInstance.AuthConnectTimeout = 10000      // ms, default 10000
+    IPConfiguration.sharedInstance.AuthReadTimeout = 10000         // ms, default 10000
+}
+```
+
+  > The connect timeout is applied in whole seconds, so use `1000` or more. Keep the values large enough for a slow mobile network; too short a timeout shows up as `cannot_connect` errors, not as faster logins.
+
+  > When a timeout is hit, `callbackFailed` receives an `IPificationException` with `sdkErrorCode == .cannot_connect` and a message starting with `Failed to connect`.
+
+<br/>
+
 
 ** Custom Host: 
 You should configure BASE_URL based on your deployment region or infrastructure. If IPification provides you a dedicated environment (e.g., for Indonesia), use the corresponding endpoint URL.
@@ -188,7 +205,7 @@ coverageService.callbackFailed = { (error) -> Void in
     // error, fallback to another auth service flow
     // print("authorized failed", error.localizedDescription)
 }
-coverageService.startCheckCoverage(phoneNumber = input_phone_number)
+coverageService.startCheckCoverage(phoneNumber: input_phone_number)
 ```
 Coverage response exposes 2 services:
 
@@ -232,6 +249,7 @@ If the client application doesn't provide this value, IPification will generate 
   ```swift
   authBuilder.addQueryParam(key: "consent_id", value: "your_consent_id")
   ```
+
 
 
 - Call `startAuthentication()` to perform Authorization API
