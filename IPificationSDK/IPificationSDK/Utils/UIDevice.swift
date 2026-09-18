@@ -108,11 +108,16 @@ extension UIDevice {
         iPhone17,4|iPhone 16 Plus
         iPhone17,1|iPhone 16 Pro
         iPhone17,2|iPhone 16 Pro Max
+        iPhone17,5|iPhone 16e
         iPhone18,3|iPhone 17
         iPhone18,4|iPhone Air
         iPhone18,1|iPhone 17 Pro
         iPhone18,2|iPhone 17 Pro Max
         iPhone18,5|iPhone 17e
+        iPhone19,2|iPhone 18 Pro
+        iPhone19,3|iPhone 18 Pro Max
+        iPhone19,7|iPhone 18 Pro Max
+        iPhone19,4|iPhone Duo
         iPad1,1|iPad
         iPad1,2|iPad 3G
         iPad2,1|iPad 2
@@ -199,6 +204,22 @@ extension UIDevice {
         iPad16,4|iPad Pro (11-inch) (5th generation)
         iPad16,5|iPad Pro (12.9-inch) (7th generation)
         iPad16,6|iPad Pro (12.9-inch) (7th generation)
+        iPad15,3|iPad Air 11-inch (7th generation)
+        iPad15,4|iPad Air 11-inch (7th generation)
+        iPad15,5|iPad Air 13-inch (7th generation)
+        iPad15,6|iPad Air 13-inch (7th generation)
+        iPad15,7|iPad (11th generation)
+        iPad15,8|iPad (11th generation)
+        iPad16,1|iPad Mini 7
+        iPad16,2|iPad Mini 7
+        iPad16,8|iPad Air 11-inch (8th generation)
+        iPad16,9|iPad Air 11-inch (8th generation)
+        iPad16,10|iPad Air 13-inch (8th generation)
+        iPad16,11|iPad Air 13-inch (8th generation)
+        iPad17,1|iPad Pro 11-inch (8th generation)
+        iPad17,2|iPad Pro 11-inch (8th generation)
+        iPad17,3|iPad Pro 13-inch (8th generation)
+        iPad17,4|iPad Pro 13-inch (8th generation)
         i386|iPhone Simulator
         x86_64|iPhone Simulator
         arm64|iPhone Simulator
