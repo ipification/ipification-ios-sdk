@@ -13,6 +13,8 @@ DEVICE_DSYM="${DEVICE_ARCHIVE}/dSYMs/${PROJECT_NAME}.framework.dSYM"
 SIMULATOR_DSYM="${SIMULATOR_ARCHIVE}/dSYMs/${PROJECT_NAME}.framework.dSYM"
 XCFRAMEWORK="${BUILD_DIR}/${PROJECT_NAME}.xcframework"
 ZIP_PATH="${BUILD_DIR}/${PROJECT_NAME}.xcframework.zip"
+DSYM_DIR="${BUILD_DIR}/${PROJECT_NAME}.dSYMs"
+DSYM_ZIP_PATH="${BUILD_DIR}/${PROJECT_NAME}.dSYMs.zip"
 
 COMMON_SETTINGS=(
   SKIP_INSTALL=NO
@@ -30,7 +32,7 @@ COMMON_SETTINGS=(
   STRIP_STYLE=non-global
 )
 
-rm -rf "$DEVICE_ARCHIVE" "$SIMULATOR_ARCHIVE" "$XCFRAMEWORK" "$ZIP_PATH"
+rm -rf "$DEVICE_ARCHIVE" "$SIMULATOR_ARCHIVE" "$XCFRAMEWORK" "$ZIP_PATH" "$DSYM_DIR" "$DSYM_ZIP_PATH"
 mkdir -p "$BUILD_DIR"
 
 xcodebuild archive \
@@ -61,19 +63,27 @@ for framework in "$DEVICE_FRAMEWORK" "$SIMULATOR_FRAMEWORK"; do
   strip -x "${framework}/${PROJECT_NAME}" || true
 done
 
+# Debug symbols are shipped as a separate archive so the xcframework zip
+# that integrators download only contains the frameworks.
 xcodebuild -create-xcframework \
   -framework "$DEVICE_FRAMEWORK" \
-  -debug-symbols "$DEVICE_DSYM" \
   -framework "$SIMULATOR_FRAMEWORK" \
-  -debug-symbols "$SIMULATOR_DSYM" \
   -output "$XCFRAMEWORK"
 
 find "$XCFRAMEWORK" -name .DS_Store -delete
 ditto -c -k --sequesterRsrc --keepParent "$XCFRAMEWORK" "$ZIP_PATH"
 
+mkdir -p "${DSYM_DIR}/ios-arm64" "${DSYM_DIR}/ios-arm64_x86_64-simulator"
+cp -R "$DEVICE_DSYM" "${DSYM_DIR}/ios-arm64/"
+cp -R "$SIMULATOR_DSYM" "${DSYM_DIR}/ios-arm64_x86_64-simulator/"
+find "$DSYM_DIR" -name .DS_Store -delete
+ditto -c -k --sequesterRsrc --keepParent "$DSYM_DIR" "$DSYM_ZIP_PATH"
+
 device_size=$(stat -f%z "${DEVICE_FRAMEWORK}/${PROJECT_NAME}")
 simulator_size=$(stat -f%z "${SIMULATOR_FRAMEWORK}/${PROJECT_NAME}")
 zip_size=$(stat -f%z "$ZIP_PATH")
+dsym_zip_size=$(stat -f%z "$DSYM_ZIP_PATH")
 
 echo "Created $ZIP_PATH"
-echo "Zip: $zip_size bytes; device: $device_size bytes; simulator: $simulator_size bytes"
+echo "Created $DSYM_ZIP_PATH"
+echo "Zip: $zip_size bytes; device: $device_size bytes; simulator: $simulator_size bytes; dSYMs zip: $dsym_zip_size bytes"
