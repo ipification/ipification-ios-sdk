@@ -71,10 +71,12 @@ public class CoverageService {
         //create request
         let coverageBuilder = CoverageRequest.Builder()
         
-        if(coverageRequest != nil){
-            coverageBuilder.readTimeout = coverageRequest!.readTimeout
-            coverageBuilder.connectTimeout = coverageRequest!.connectTimeout
-//            coverageBuilder.dnsConnectionTimeout = coverageRequest!.dnsConnectionTimeout
+        // apply the caller-supplied request (timeouts, headers, extra query params), if any
+        if let customCoverageRequest = customCoverageRequest {
+            coverageBuilder.readTimeout = customCoverageRequest.readTimeout
+            coverageBuilder.connectTimeout = customCoverageRequest.connectTimeout
+            coverageBuilder.headers = customCoverageRequest.headers
+            coverageBuilder.queryParams = customCoverageRequest.queryParams
         }
         
         // add client_id to the request parameter
@@ -130,10 +132,12 @@ public class CoverageService {
         //create request
         let coverageBuilder = CoverageRequest.Builder()
         
-        if(coverageRequest != nil){
-            coverageBuilder.readTimeout = coverageRequest!.readTimeout
-            coverageBuilder.connectTimeout = coverageRequest!.connectTimeout
-//            coverageBuilder.dnsConnectionTimeout = coverageRequest!.dnsConnectionTimeout
+        // apply the caller-supplied request (timeouts, headers, extra query params), if any
+        if let customCoverageRequest = customCoverageRequest {
+            coverageBuilder.readTimeout = customCoverageRequest.readTimeout
+            coverageBuilder.connectTimeout = customCoverageRequest.connectTimeout
+            coverageBuilder.headers = customCoverageRequest.headers
+            coverageBuilder.queryParams = customCoverageRequest.queryParams
         }
         
         // add client_id to the request parameter
