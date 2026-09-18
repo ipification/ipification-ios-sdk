@@ -37,8 +37,6 @@
 		0A51A0052EBC000100000001 /* SMSAuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A51A0042EBC000100000001 /* SMSAuthResponse.swift */; };
 		0A51A0072EBC000100000001 /* SMSTokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A51A0062EBC000100000001 /* SMSTokenResponse.swift */; };
 		0A51A0092EBC000100000001 /* SMSServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A51A0082EBC000100000001 /* SMSServices.swift */; };
-		0A8C809427E1B87000847AC1 /* IsoCountryCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8C809327E1B87000847AC1 /* IsoCountryCodes.swift */; };
-		0A8C809627E1B88D00847AC1 /* IsoCountries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8C809527E1B88D00847AC1 /* IsoCountries.swift */; };
 		0A90C49E2EBD000100000001 /* IMAutoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A90C49D2A1E7B2A008801DB /* IMAutoViewController.swift */; };
 		0AAB35AD2EBD000100000001 /* IMViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AAB35AC2769A1F2006A0698 /* IMViewController.swift */; };
 		0AAB35C02EBD000100000001 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AAB35BF2769C1AA006A0698 /* ViewController.swift */; };
@@ -93,8 +91,6 @@
 		0A51A0042EBC000100000001 /* SMSAuthResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMSAuthResponse.swift; sourceTree = "<group>"; };
 		0A51A0062EBC000100000001 /* SMSTokenResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMSTokenResponse.swift; sourceTree = "<group>"; };
 		0A51A0082EBC000100000001 /* SMSServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMSServices.swift; sourceTree = "<group>"; };
-		0A8C809327E1B87000847AC1 /* IsoCountryCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IsoCountryCodes.swift; sourceTree = "<group>"; };
-		0A8C809527E1B88D00847AC1 /* IsoCountries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IsoCountries.swift; sourceTree = "<group>"; };
 		0A90C49D2A1E7B2A008801DB /* IMAutoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMAutoViewController.swift; sourceTree = "<group>"; };
 		0AAB35AC2769A1F2006A0698 /* IMViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IMViewController.swift; sourceTree = "<group>"; };
 		0AAB35BF2769C1AA006A0698 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -195,8 +191,6 @@
 				0AD30B63247CEAC800093153 /* ConnectionManager.swift */,
 				0A3DE4102668F9920085BDF1 /* URLExt.swift */,
 				0ABAB972276ACDF000CF9AF2 /* Color.swift */,
-				0A8C809327E1B87000847AC1 /* IsoCountryCodes.swift */,
-				0A8C809527E1B88D00847AC1 /* IsoCountries.swift */,
 				0A2A71B9281A603D00869DDB /* StrExt.swift */,
 			);
 			path = Utils;
@@ -498,13 +492,11 @@
 				0A51A0092EBC000100000001 /* SMSServices.swift in Sources */,
 				0AE4694C24861133004B2B3C /* CoverageResponse.swift in Sources */,
 				0AD40B7D2486446000B0D1A6 /* AuthorizationCallback.swift in Sources */,
-				0A8C809627E1B88D00847AC1 /* IsoCountries.swift in Sources */,
 				0AD40B7E2486446000B0D1A6 /* AuthorizationResponse.swift in Sources */,
 				0A3DE4022668AA260085BDF1 /* NetworkSocket.swift in Sources */,
 				0A3A38D12EBD000100000001 /* IPificationTheme.swift in Sources */,
 				0AE4694A2485FE29004B2B3C /* AuthorizationService.swift in Sources */,
 				0ABAB9842EBD000100000001 /* IMSession.swift in Sources */,
-				0A8C809427E1B87000847AC1 /* IsoCountryCodes.swift in Sources */,
 				0A26121B2EBD000100000001 /* IPificationLocale.swift in Sources */,
 				0A4163F4264A2F58009FFE48 /* UIDevice.swift in Sources */,
 				0AF8E8752706D7E00065087C /* CookieManager.swift in Sources */,
