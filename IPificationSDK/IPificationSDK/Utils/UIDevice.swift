@@ -9,176 +9,198 @@
 import Foundation
 import UIKit
 
-public extension UIDevice {
+extension UIDevice {
 
     /// The user-readable hardware model name for the current device.
     static let deviceModelName: String = {
-        var systemInfo = utsname()
-        uname(&systemInfo)
-        let machineMirror = Mirror(reflecting: systemInfo.machine)
-        let identifier = machineMirror.children.reduce("") { identifier, element in
-            guard let value = element.value as? Int8, value != 0 else { return identifier }
-            return identifier + String(UnicodeScalar(UInt8(value)))
-        }
-
-        func mapToDevice(identifier: String) -> String { // swiftlint:disable:this cyclomatic_complexity
-            #if os(iOS)
-                switch identifier {
-                case "iPod1,1": return "iPod touch (1st generation)"
-                case "iPod2,1": return "iPod touch (2nd generation)"
-                case "iPod3,1": return "iPod touch (3rd generation)"
-                case "iPod4,1": return "iPod touch (4th generation)"
-                case "iPod5,1": return "iPod touch (5th generation)"
-                case "iPod7,1": return "iPod touch (6th generation)"
-                case "iPod9,1": return "iPod touch (7th generation)"
-                case "iPhone1,1": return "iPhone"
-                case "iPhone1,2": return "iPhone 3G"
-                case "iPhone2,1": return "iPhone 3GS"
-                case "iPhone3,1", "iPhone3,2", "iPhone3,3": return "iPhone 4"
-                case "iPhone4,1": return "iPhone 4S"
-                case "iPhone5,1", "iPhone5,2": return "iPhone 5"
-                case "iPhone5,3", "iPhone5,4": return "iPhone 5C"
-                case "iPhone6,1", "iPhone6,2": return "iPhone 5S"
-                case "iPhone7,1": return "iPhone 6 Plus"
-                case "iPhone7,2": return "iPhone 6"
-                case "iPhone8,1": return "iPhone 6S"
-                case "iPhone8,2": return "iPhone 6S Plus"
-                case "iPhone8,4": return "iPhone SE (1st generation)"
-                case "iPhone9,1", "iPhone9,3": return "iPhone 7"
-                case "iPhone9,2", "iPhone9,4": return "iPhone 7 Plus"
-                case "iPhone10,1", "iPhone10,4": return "iPhone 8"
-                case "iPhone10,2", "iPhone10,5": return "iPhone 8 Plus"
-                case "iPhone10,3", "iPhone10,6": return "iPhone X"
-                case "iPhone11,2": return "iPhone XS"
-                case "iPhone11,4", "iPhone11,6": return "iPhone XS Max"
-                case "iPhone11,8": return "iPhone XR"
-                case "iPhone12,1": return "iPhone 11"
-                case "iPhone12,3": return "iPhone 11 Pro"
-                case "iPhone12,5": return "iPhone 11 Pro Max"
-                case "iPhone12,8": return "iPhone SE (2nd generation)"
-                case "iPhone13,1": return "iPhone 12 Mini"
-                case "iPhone13,2": return "iPhone 12"
-                case "iPhone13,3": return "iPhone 12 Pro"
-                case "iPhone13,4": return "iPhone 12 Pro Max"
-                case "iPhone14,2": return "iPhone 13 Pro"
-                case "iPhone14,3": return "iPhone 13 Pro Max"
-                case "iPhone14,4": return "iPhone 13 Mini"
-                case "iPhone14,5": return "iPhone 13"
-                case "iPhone14,6": return "iPhone SE (3rd generation)"
-                case "iPhone14,7": return "iPhone 14"
-                case "iPhone14,8": return "iPhone 14 Plus"
-                case "iPhone15,2": return "iPhone 14 Pro"
-                case "iPhone15,3": return "iPhone 14 Pro Max"
-                case "iPhone15,4": return "iPhone 15"
-                case "iPhone15,5": return "iPhone 15 Plus"
-                case "iPhone16,1": return "iPhone 15 Pro"
-                case "iPhone16,2": return "iPhone 15 Pro Max"
-                case "iPhone17,3": return "iPhone 16"
-                case "iPhone17,4": return "iPhone 16 Plus"
-                case "iPhone17,1": return "iPhone 16 Pro"
-                case "iPhone17,2": return "iPhone 16 Pro Max"
-                case "iPhone18,3": return "iPhone 17"
-                case "iPhone18,4": return "iPhone Air"
-                case "iPhone18,1": return "iPhone 17 Pro"
-                case "iPhone18,2": return "iPhone 17 Pro Max"
-                case "iPhone18,5": return "iPhone 17e"
-                case "iPad1,1": return "iPad"
-                case "iPad1,2": return "iPad 3G"
-                case "iPad2,1", "iPad2,2", "iPad2,3", "iPad2,4": return "iPad 2"
-                case "iPad3,1", "iPad3,2", "iPad3,3": return "iPad (3rd generation)"
-                case "iPad3,4", "iPad3,5", "iPad3,6": return "iPad (4th generation)"
-                case "iPad2,5", "iPad2,6", "iPad2,7": return "iPad Mini"
-                case "iPad4,1", "iPad4,2", "iPad4,3": return "iPad Air"
-                case "iPad4,4", "iPad4,5", "iPad4,6": return "iPad Mini 2"
-                case "iPad4,7", "iPad4,8", "iPad4,9": return "iPad Mini 3"
-                case "iPad5,1", "iPad5,2": return "iPad Mini 4"
-                case "iPad6,3", "iPad6,4": return "iPad Pro (9.7-inch)"
-                case "iPad6,7", "iPad6,8": return "iPad Pro (12.9-inch)"
-                case "iPad6,11", "iPad6,12": return "iPad (5th generation)"
-                case "iPad7,1", "iPad7,2": return "iPad Pro (12.9-inch) (2nd generation)"
-                case "iPad7,3", "iPad7,4": return "iPad Pro (10.5-inch)"
-                case "iPad7,5", "iPad7,6": return "iPad (6th generation)"
-                case "iPad7,11", "iPad7,12": return "iPad (7th generation)"
-                case "iPad8,1", "iPad8,2", "iPad8,3", "iPad8,4": return "iPad Pro (11-inch) (1st generation)"
-                case "iPad8,5", "iPad8,6", "iPad8,7", "iPad8,8": return "iPad Pro (12.9-inch) (3rd generation)"
-                case "iPad8,9", "iPad8,10": return "iPad Pro (11-inch) (2nd generation)"
-                case "iPad8,11", "iPad8,12": return "iPad Pro (12.9-inch) (4th generation)"
-                case "iPad11,1", "iPad11,2": return "iPad Mini 5"
-                case "iPad11,3", "iPad11,4": return "iPad Air (3rd generation)"
-                case "iPad11,6", "iPad11,7": return "iPad (8th generation)"
-                case "iPad12,1", "iPad12,2": return "iPad (9th generation)"
-                case "iPad13,1", "iPad13,2": return "iPad Air (4th generation)"
-                case "iPad13,4", "iPad13,5", "iPad13,6", "iPad13,7": return "iPad Pro (11-inch) (3rd generation)"
-                case "iPad13,8", "iPad13,9", "iPad13,10", "iPad13,11": return "iPad Pro (12.9-inch) (5th generation)"
-                case "iPad13,16", "iPad13,17": return "iPad Air (5th generation)"
-                case "iPad14,1", "iPad14,2": return "iPad Mini 6"
-                case "iPad14,3", "iPad14,4": return "iPad Pro (11-inch) (4th generation)"
-                case "iPad14,5", "iPad14,6": return "iPad Pro (12.9-inch) (6th generation)"
-                case "iPad14,8", "iPad14,9", "iPad14,10", "iPad14,11": return "iPad Air (6th generation)"
-                case "iPad16,3", "iPad16,4": return "iPad Pro (11-inch) (5th generation)"
-                case "iPad16,5", "iPad16,6": return "iPad Pro (12.9-inch) (7th generation)"
-                case "Watch1,1": return "Apple Watch (38mm)"
-                case "Watch1,2": return "Apple Watch (42mm)"
-                case "Watch2,6": return "Apple Watch Series 1 (38mm)"
-                case "Watch2,7": return "Apple Watch Series 1 (42mm)"
-                case "Watch2,3": return "Apple Watch Series 2 (38mm)"
-                case "Watch2,4": return "Apple Watch Series 2 (42mm)"
-                case "Watch3,1": return "Apple Watch Series 3 (38mm, GPS+Cellular)"
-                case "Watch3,2": return "Apple Watch Series 3 (42mm, GPS+Cellular)"
-                case "Watch3,3": return "Apple Watch Series 3 (38mm, GPS)"
-                case "Watch3,4": return "Apple Watch Series 3 (42mm, GPS)"
-                case "Watch4,1": return "Apple Watch Series 4 (40mm, GPS)"
-                case "Watch4,2": return "Apple Watch Series 4 (44mm, GPS)"
-                case "Watch4,3": return "Apple Watch Series 4 (40mm, GPS+Cellular)"
-                case "Watch4,4": return "Apple Watch Series 4 (44mm, GPS+Cellular)"
-                case "Watch5,1": return "Apple Watch Series 5 (40mm, GPS)"
-                case "Watch5,2": return "Apple Watch Series 5 (44mm, GPS)"
-                case "Watch5,3": return "Apple Watch Series 5 (40mm, GPS+Cellular)"
-                case "Watch5,4": return "Apple Watch Series 5 (44mm, GPS+Cellular)"
-                case "Watch5,9": return "Apple Watch SE (40mm, GPS)"
-                case "Watch5,10": return "Apple Watch SE (44mm, GPS)"
-                case "Watch5,11": return "Apple Watch SE (40mm, GPS+Cellular)"
-                case "Watch5,12": return "Apple Watch SE (44mm, GPS+Cellular)"
-                case "Watch6,1": return "Apple Watch Series 6 (40mm, GPS)"
-                case "Watch6,2": return "Apple Watch Series 6 (44mm, GPS)"
-                case "Watch6,3": return "Apple Watch Series 6 (40mm, GPS+Cellular)"
-                case "Watch6,4": return "Apple Watch Series 6 (44mm, GPS+Cellular)"
-                case "Watch6,6": return "Apple Watch Series 7 (41mm, GPS)"
-                case "Watch6,7": return "Apple Watch Series 7 (45mm, GPS)"
-                case "Watch6,8": return "Apple Watch Series 7 (41mm, GPS+Cellular)"
-                case "Watch6,9": return "Apple Watch Series 7 (45mm, GPS+Cellular)"
-                case "Watch6,10": return "Apple Watch SE (2nd generation, 40mm, GPS)"
-                case "Watch6,11": return "Apple Watch SE (2nd generation, 44mm, GPS)"
-                case "Watch6,12": return "Apple Watch SE (2nd generation, 40mm, GPS+Cellular)"
-                case "Watch6,13": return "Apple Watch SE (2nd generation, 44mm, GPS+Cellular)"
-                case "Watch6,14": return "Apple Watch Series 8 (41mm, GPS)"
-                case "Watch6,15": return "Apple Watch Series 8 (45mm, GPS)"
-                case "Watch6,16": return "Apple Watch Series 8 (41mm, GPS+Cellular)"
-                case "Watch6,17": return "Apple Watch Series 8 (45mm, GPS+Cellular)"
-                case "Watch6,18": return "Apple Watch Ultra"
-                case "Watch7,1": return "Apple Watch Series 9 (41mm, GPS)"
-                case "Watch7,2": return "Apple Watch Series 9 (45mm, GPS)"
-                case "Watch7,3": return "Apple Watch Series 9 (41mm, GPS+Cellular)"
-                case "Watch7,4": return "Apple Watch Series 9 (45mm, GPS+Cellular)"
-                case "Watch7,5": return "Apple Watch Ultra 2"
-                case "AppleTV5,3": return "Apple TV"
-                case "AppleTV6,2": return "Apple TV 4K"
-                case "AudioAccessory1,1": return "HomePod"
-                case "AudioAccessory5,1": return "HomePod mini"
-                case "i386", "x86_64", "arm64": return "iPhone Simulator"
-                default: return identifier
-                }
-            #elseif os(tvOS)
-                switch identifier {
-                case "AppleTV5,3": return "Apple TV 4"
-                case "AppleTV6,2": return "Apple TV 4K"
-                case "i386", "x86_64": return "Simulator \(mapToDevice(identifier: ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"] ?? "tvOS"))"
-                default: return identifier
-            }
-            #endif
-        }
-
-        return mapToDevice(identifier: identifier)
+        let identifier = hardwareIdentifier()
+        return modelNameTable[identifier] ?? identifier
     }()
 
+    /// The raw hardware identifier reported by the kernel, e.g. "iPhone14,5".
+    private static func hardwareIdentifier() -> String {
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        let capacity = MemoryLayout.size(ofValue: systemInfo.machine)
+        return withUnsafePointer(to: &systemInfo.machine) { pointer in
+            pointer.withMemoryRebound(to: CChar.self, capacity: capacity) {
+                String(cString: $0)
+            }
+        }
+    }
+
+    /// Hardware identifier to marketing name. Kept as a single string literal
+    /// parsed once at first use rather than a switch: each `case` of the old
+    /// switch compiled to its own code path and the mapping alone was ~14 KB
+    /// of the release binary.
+    private static let modelNameTable: [String: String] = {
+        var table = [String: String]()
+        for row in modelNameRows.split(separator: "\n") {
+            if let separator = row.firstIndex(of: "|") {
+                table[String(row[..<separator])] = String(row[row.index(after: separator)...])
+            }
+        }
+        return table
+    }()
+
+    private static let modelNameRows = """
+        iPod1,1|iPod touch (1st generation)
+        iPod2,1|iPod touch (2nd generation)
+        iPod3,1|iPod touch (3rd generation)
+        iPod4,1|iPod touch (4th generation)
+        iPod5,1|iPod touch (5th generation)
+        iPod7,1|iPod touch (6th generation)
+        iPod9,1|iPod touch (7th generation)
+        iPhone1,1|iPhone
+        iPhone1,2|iPhone 3G
+        iPhone2,1|iPhone 3GS
+        iPhone3,1|iPhone 4
+        iPhone3,2|iPhone 4
+        iPhone3,3|iPhone 4
+        iPhone4,1|iPhone 4S
+        iPhone5,1|iPhone 5
+        iPhone5,2|iPhone 5
+        iPhone5,3|iPhone 5C
+        iPhone5,4|iPhone 5C
+        iPhone6,1|iPhone 5S
+        iPhone6,2|iPhone 5S
+        iPhone7,1|iPhone 6 Plus
+        iPhone7,2|iPhone 6
+        iPhone8,1|iPhone 6S
+        iPhone8,2|iPhone 6S Plus
+        iPhone8,4|iPhone SE (1st generation)
+        iPhone9,1|iPhone 7
+        iPhone9,3|iPhone 7
+        iPhone9,2|iPhone 7 Plus
+        iPhone9,4|iPhone 7 Plus
+        iPhone10,1|iPhone 8
+        iPhone10,4|iPhone 8
+        iPhone10,2|iPhone 8 Plus
+        iPhone10,5|iPhone 8 Plus
+        iPhone10,3|iPhone X
+        iPhone10,6|iPhone X
+        iPhone11,2|iPhone XS
+        iPhone11,4|iPhone XS Max
+        iPhone11,6|iPhone XS Max
+        iPhone11,8|iPhone XR
+        iPhone12,1|iPhone 11
+        iPhone12,3|iPhone 11 Pro
+        iPhone12,5|iPhone 11 Pro Max
+        iPhone12,8|iPhone SE (2nd generation)
+        iPhone13,1|iPhone 12 Mini
+        iPhone13,2|iPhone 12
+        iPhone13,3|iPhone 12 Pro
+        iPhone13,4|iPhone 12 Pro Max
+        iPhone14,2|iPhone 13 Pro
+        iPhone14,3|iPhone 13 Pro Max
+        iPhone14,4|iPhone 13 Mini
+        iPhone14,5|iPhone 13
+        iPhone14,6|iPhone SE (3rd generation)
+        iPhone14,7|iPhone 14
+        iPhone14,8|iPhone 14 Plus
+        iPhone15,2|iPhone 14 Pro
+        iPhone15,3|iPhone 14 Pro Max
+        iPhone15,4|iPhone 15
+        iPhone15,5|iPhone 15 Plus
+        iPhone16,1|iPhone 15 Pro
+        iPhone16,2|iPhone 15 Pro Max
+        iPhone17,3|iPhone 16
+        iPhone17,4|iPhone 16 Plus
+        iPhone17,1|iPhone 16 Pro
+        iPhone17,2|iPhone 16 Pro Max
+        iPhone18,3|iPhone 17
+        iPhone18,4|iPhone Air
+        iPhone18,1|iPhone 17 Pro
+        iPhone18,2|iPhone 17 Pro Max
+        iPhone18,5|iPhone 17e
+        iPad1,1|iPad
+        iPad1,2|iPad 3G
+        iPad2,1|iPad 2
+        iPad2,2|iPad 2
+        iPad2,3|iPad 2
+        iPad2,4|iPad 2
+        iPad3,1|iPad (3rd generation)
+        iPad3,2|iPad (3rd generation)
+        iPad3,3|iPad (3rd generation)
+        iPad3,4|iPad (4th generation)
+        iPad3,5|iPad (4th generation)
+        iPad3,6|iPad (4th generation)
+        iPad2,5|iPad Mini
+        iPad2,6|iPad Mini
+        iPad2,7|iPad Mini
+        iPad4,1|iPad Air
+        iPad4,2|iPad Air
+        iPad4,3|iPad Air
+        iPad4,4|iPad Mini 2
+        iPad4,5|iPad Mini 2
+        iPad4,6|iPad Mini 2
+        iPad4,7|iPad Mini 3
+        iPad4,8|iPad Mini 3
+        iPad4,9|iPad Mini 3
+        iPad5,1|iPad Mini 4
+        iPad5,2|iPad Mini 4
+        iPad6,3|iPad Pro (9.7-inch)
+        iPad6,4|iPad Pro (9.7-inch)
+        iPad6,7|iPad Pro (12.9-inch)
+        iPad6,8|iPad Pro (12.9-inch)
+        iPad6,11|iPad (5th generation)
+        iPad6,12|iPad (5th generation)
+        iPad7,1|iPad Pro (12.9-inch) (2nd generation)
+        iPad7,2|iPad Pro (12.9-inch) (2nd generation)
+        iPad7,3|iPad Pro (10.5-inch)
+        iPad7,4|iPad Pro (10.5-inch)
+        iPad7,5|iPad (6th generation)
+        iPad7,6|iPad (6th generation)
+        iPad7,11|iPad (7th generation)
+        iPad7,12|iPad (7th generation)
+        iPad8,1|iPad Pro (11-inch) (1st generation)
+        iPad8,2|iPad Pro (11-inch) (1st generation)
+        iPad8,3|iPad Pro (11-inch) (1st generation)
+        iPad8,4|iPad Pro (11-inch) (1st generation)
+        iPad8,5|iPad Pro (12.9-inch) (3rd generation)
+        iPad8,6|iPad Pro (12.9-inch) (3rd generation)
+        iPad8,7|iPad Pro (12.9-inch) (3rd generation)
+        iPad8,8|iPad Pro (12.9-inch) (3rd generation)
+        iPad8,9|iPad Pro (11-inch) (2nd generation)
+        iPad8,10|iPad Pro (11-inch) (2nd generation)
+        iPad8,11|iPad Pro (12.9-inch) (4th generation)
+        iPad8,12|iPad Pro (12.9-inch) (4th generation)
+        iPad11,1|iPad Mini 5
+        iPad11,2|iPad Mini 5
+        iPad11,3|iPad Air (3rd generation)
+        iPad11,4|iPad Air (3rd generation)
+        iPad11,6|iPad (8th generation)
+        iPad11,7|iPad (8th generation)
+        iPad12,1|iPad (9th generation)
+        iPad12,2|iPad (9th generation)
+        iPad13,1|iPad Air (4th generation)
+        iPad13,2|iPad Air (4th generation)
+        iPad13,4|iPad Pro (11-inch) (3rd generation)
+        iPad13,5|iPad Pro (11-inch) (3rd generation)
+        iPad13,6|iPad Pro (11-inch) (3rd generation)
+        iPad13,7|iPad Pro (11-inch) (3rd generation)
+        iPad13,8|iPad Pro (12.9-inch) (5th generation)
+        iPad13,9|iPad Pro (12.9-inch) (5th generation)
+        iPad13,10|iPad Pro (12.9-inch) (5th generation)
+        iPad13,11|iPad Pro (12.9-inch) (5th generation)
+        iPad13,16|iPad Air (5th generation)
+        iPad13,17|iPad Air (5th generation)
+        iPad14,1|iPad Mini 6
+        iPad14,2|iPad Mini 6
+        iPad14,3|iPad Pro (11-inch) (4th generation)
+        iPad14,4|iPad Pro (11-inch) (4th generation)
+        iPad14,5|iPad Pro (12.9-inch) (6th generation)
+        iPad14,6|iPad Pro (12.9-inch) (6th generation)
+        iPad14,8|iPad Air (6th generation)
+        iPad14,9|iPad Air (6th generation)
+        iPad14,10|iPad Air (6th generation)
+        iPad14,11|iPad Air (6th generation)
+        iPad16,3|iPad Pro (11-inch) (5th generation)
+        iPad16,4|iPad Pro (11-inch) (5th generation)
+        iPad16,5|iPad Pro (12.9-inch) (7th generation)
+        iPad16,6|iPad Pro (12.9-inch) (7th generation)
+        i386|iPhone Simulator
+        x86_64|iPhone Simulator
+        arm64|iPhone Simulator
+        """
 }
